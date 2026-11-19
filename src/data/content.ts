@@ -304,6 +304,25 @@ export interface ExperienceItem {
 
 export const experience: ExperienceItem[] = [
   {
+    kind: 'work',
+    title: { id: 'Data Analyst Intern', en: 'Data Analyst Intern' },
+    org: 'PT Vinix Seven Aurum',
+    period: { id: 'Agu 2026 – Des 2026', en: 'Aug 2026 – Dec 2026' },
+    current: true,
+    points: {
+      id: [
+        'Bergabung di Divisi Data Analyst.',
+        'Proyek akhir kelompok: dashboard Talent and Career Readiness di Looker Studio.',
+        'TODO: tambahkan 1–2 tanggung jawab utama selama magang.',
+      ],
+      en: [
+        'Part of the Data Analyst Division.',
+        'Group final project: a Talent and Career Readiness dashboard in Looker Studio.',
+        'TODO: add 1–2 key responsibilities during the internship.',
+      ],
+    },
+  },
+  {
     kind: 'program',
     title: { id: 'Peserta Dicoding Coding Camp 2026', en: 'Dicoding Coding Camp 2026 Participant' },
     org: 'Dicoding',
