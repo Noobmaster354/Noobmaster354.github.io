@@ -1,0 +1,197 @@
+---
+import ArrowLeft from '@lucide/astro/icons/arrow-left';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import Layout from '../layouts/Layout.astro';
+import ProjectCover from '../components/ProjectCover.astro';
+import EmbedFrame from '../components/EmbedFrame.astro';
+import { t, localizePath, filled, isTodo } from '../i18n/utils';
+import { projects, type Project } from '../data/projects';
+import type { Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+  project: Project;
+}
+const { lang, project: p } = Astro.props;
+const ui = t(lang);
+const cs = ui.caseStudy;
+
+const idx = projects.findIndex((x) => x.slug === p.slug);
+const prev = projects[(idx - 1 + projects.length) % projects.length];
+const next = projects[(idx + 1) % projects.length];
+
+const tools = p.tools.filter((x) => !isTodo(x));
+const links = p.links.filter((l) => !isTodo(l.href));
+
+const sections = [
+  { key: 'background', title: cs.sections.background, body: filled(p.background[lang]), as: 'p' },
+  { key: 'data', title: cs.sections.data, body: filled(p.data[lang]), as: 'p' },
+  { key: 'method', title: cs.sections.method, body: filled(p.method[lang]), as: 'ul' },
+  { key: 'findings', title: cs.sections.findings, body: filled(p.findings[lang]), as: 'ul' },
+  { key: 'impact', title: cs.sections.impact, body: filled(p.impact[lang]), as: 'p' },
+] as const;
+
+const meta = [
+  { label: cs.meta.type, value: p.type[lang] },
+  { label: cs.meta.role, value: p.role[lang] },
+  { label: cs.meta.period, value: p.year },
+].map((m) => ({ ...m, value: isTodo(m.value) || m.value.includes('TODO') ? cs.pending : m.value }));
+
+const title = `${p.title[lang]} — ${ui.meta.projectTitleSuffix}`;
+---
+
+<Layout lang={lang} title={title} description={p.summary[lang]} type="article">
+  <article>
+    <header class="relative overflow-hidden pb-12 pt-28 sm:pt-36">
+      <div class="bg-grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+      <div class="container-x">
+        <a href={localizePath('/#projects', lang)} class="link-u flex w-fit items-center gap-2 font-mono text-xs text-muted hover:text-fg" data-reveal>
+          <ArrowLeft size={14} aria-hidden="true" />
+          {cs.back}
+        </a>
+        <p class="eyebrow mt-10" data-reveal>{p.type[lang]}</p>
+        <h1
+          class="mt-5 max-w-4xl text-balance text-[clamp(2.25rem,7vw,4.75rem)] font-semibold leading-[1] tracking-[-0.035em] text-fg"
+          transition:name={`title-${p.slug}`}
+        >
+          {p.title[lang]}
+        </h1>
+        <p class="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg" data-reveal>{p.summary[lang]}</p>
+
+        <dl class="mt-10 grid gap-6 border-t border-line pt-6 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
+          {
+            meta.map((m) => (
+              <div>
+                <dt class="font-mono text-xs uppercase tracking-wider text-subtle">{m.label}</dt>
+                <dd class="mt-1.5 text-sm text-fg">{m.value}</dd>
+              </div>
+            ))
+          }
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-wider text-subtle">{cs.meta.tools}</dt>
+            <dd class="mt-1.5 text-sm text-fg">{tools.length ? tools.join(', ') : cs.pending}</dd>
+          </div>
+        </dl>
+      </div>
+    </header>
+
+    <div class="container-x">
+      <div class="card aspect-[16/9] overflow-hidden sm:aspect-[21/9]" transition:name={`cover-${p.slug}`} data-reveal>
+        <div class="h-full w-full" data-speed="0.06">
+          <ProjectCover type={p.cover} class="scale-110" />
+        </div>
+      </div>
+
+      {
+        p.embed.provider && (
+          <section class="mt-16 sm:mt-24" aria-labelledby="embed-title">
+            <h2 id="embed-title" class="eyebrow mb-6">
+              {cs.embedTitle}
+            </h2>
+            <div data-reveal>
+              <EmbedFrame url={p.embed.url} provider={p.embed.provider} ratio={p.embed.ratio} title={`${cs.embedTitle}: ${p.title[lang]}`} lang={lang} />
+            </div>
+          </section>
+        )
+      }
+
+      <div class="mt-16 sm:mt-24">
+        {
+          sections.map((s, i) => (
+            <section class="grid gap-4 border-t border-line py-10 md:grid-cols-12 md:gap-8 sm:py-14" aria-labelledby={`sec-${s.key}`}>
+              <div class="md:col-span-4">
+                <p class="font-mono text-xs text-accent">{String(i + 1).padStart(2, '0')}</p>
+                <h2 id={`sec-${s.key}`} class="mt-2 text-2xl font-semibold tracking-tight text-fg" data-split>
+                  {s.title}
+                </h2>
+              </div>
+              <div class="prose-case md:col-span-8 md:pt-6" data-reveal>
+                {s.body.length === 0 ? (
+                  <p class="todo-note inline-block">{cs.pending}</p>
+                ) : s.as === 'ul' ? (
+                  <ul>
+                    {s.body.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  s.body.map((b) => <p>{b}</p>)
+                )}
+              </div>
+            </section>
+          ))
+        }
+
+        <section class="grid gap-4 border-t border-line py-10 md:grid-cols-12 md:gap-8 sm:py-14" aria-labelledby="sec-tools">
+          <div class="md:col-span-4">
+            <p class="font-mono text-xs text-accent">06</p>
+            <h2 id="sec-tools" class="mt-2 text-2xl font-semibold tracking-tight text-fg" data-split>{cs.sections.tools}</h2>
+          </div>
+          <div class="md:col-span-8 md:pt-6">
+            {
+              tools.length ? (
+                <ul class="flex flex-wrap gap-2" data-reveal-group>
+                  {tools.map((tool) => (
+                    <li class="chip chip-accent">{tool}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="todo-note inline-block">{cs.pending}</p>
+              )
+            }
+          </div>
+        </section>
+
+        <section class="grid gap-4 border-y border-line py-10 md:grid-cols-12 md:gap-8 sm:py-14" aria-labelledby="sec-links">
+          <div class="md:col-span-4">
+            <p class="font-mono text-xs text-accent">07</p>
+            <h2 id="sec-links" class="mt-2 text-2xl font-semibold tracking-tight text-fg" data-split>{cs.sections.links}</h2>
+          </div>
+          <div class="md:col-span-8 md:pt-6">
+            {
+              links.length ? (
+                <ul class="flex flex-wrap gap-3" data-reveal-group>
+                  {links.map((l) => (
+                    <li>
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" class="btn btn-ghost" data-magnetic>
+                        <span data-magnetic-inner>{l.label[lang]}</span>
+                        <ArrowUpRight class="btn-icon" size={16} aria-hidden="true" />
+                        <span class="sr-only">{ui.a11y.externalLink}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="todo-note inline-block">{cs.pending}</p>
+              )
+            }
+          </div>
+        </section>
+      </div>
+
+      <nav class="mt-16 grid gap-4 sm:grid-cols-2" aria-label={ui.nav.projects}>
+        <a href={localizePath(`/projects/${prev.slug}/`, lang)} class="card group flex flex-col gap-2 p-6 transition-colors hover:border-accent" data-spotlight>
+          <span class="spotlight" aria-hidden="true"></span>
+          <span class="inline-flex items-center gap-2 font-mono text-xs text-subtle">
+            <ArrowLeft size={14} class="transition-transform duration-500 group-hover:-translate-x-1" aria-hidden="true" />
+            {cs.prev}
+          </span>
+          <span class="text-lg font-semibold text-fg">{prev.title[lang]}</span>
+        </a>
+        <a
+          href={localizePath(`/projects/${next.slug}/`, lang)}
+          class="card group flex flex-col items-end gap-2 p-6 text-right transition-colors hover:border-accent"
+          data-spotlight
+        >
+          <span class="spotlight" aria-hidden="true"></span>
+          <span class="inline-flex items-center gap-2 font-mono text-xs text-subtle">
+            {cs.next}
+            <ArrowRight size={14} class="transition-transform duration-500 group-hover:translate-x-1" aria-hidden="true" />
+          </span>
+          <span class="text-lg font-semibold text-fg">{next.title[lang]}</span>
+        </a>
+      </nav>
+    </div>
+  </article>
+</Layout>

@@ -1,0 +1,18 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  id: string;
+  as?: 'h1' | 'h2';
+}
+const { eyebrow, title, intro, id, as: Tag = 'h2' } = Astro.props;
+---
+
+<header class="mb-12 max-w-2xl sm:mb-16">
+  <p class="eyebrow mb-5" data-reveal>{eyebrow}</p>
+  <Tag id={id} class="text-balance text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-fg" data-split>
+    {title}
+  </Tag>
+  {intro && <p class="mt-5 text-pretty leading-relaxed text-muted sm:text-lg" data-reveal>{intro}</p>}
+</header>

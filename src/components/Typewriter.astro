@@ -1,0 +1,21 @@
+---
+/**
+ * Teks yang mengetik/berganti kata. Animasi dijalankan oleh scripts/motion/typing.ts.
+ * Pembaca layar membaca versi statis (sr-only); bagian animasi aria-hidden.
+ * Satu baris tetap (nowrap) → tidak ada layout shift saat kata berganti.
+ */
+interface Props {
+  prefix: string;
+  words: string[];
+  class?: string;
+}
+const { prefix, words, class: cls = '' } = Astro.props;
+---
+
+<p class:list={['typewriter overflow-hidden whitespace-nowrap font-mono', cls]}>
+  <span class="sr-only">{prefix} {words.join(', ')}</span>
+  <span aria-hidden="true">
+    <span class="text-subtle">{prefix}</span>{" "}
+    <span class="text-accent" data-typewriter={JSON.stringify(words)}>{words[0]}</span><span class="caret"></span>
+  </span>
+</p>

@@ -1,0 +1,150 @@
+---
+/**
+ * Cover abstrak per proyek (SVG buatan sendiri, dekoratif).
+ * Bukan screenshot — ganti dengan gambar asli bila sudah tersedia (TODO).
+ */
+import type { Cover } from '../data/projects';
+
+interface Props {
+  type: Cover;
+  class?: string;
+}
+const { type, class: cls = '' } = Astro.props;
+
+// PRNG deterministik supaya hasil build selalu sama
+function rng(seed: number) {
+  return () => {
+    seed = (seed * 1664525 + 1013904223) % 4294967296;
+    return seed / 4294967296;
+  };
+}
+const r = rng(type.length * 97 + 13);
+
+const W = 400;
+const H = 250;
+
+// network
+const nodes = Array.from({ length: 18 }, () => ({ x: 40 + r() * 320, y: 30 + r() * 190, s: 1.5 + r() * 2.5 }));
+const edges: [number, number][] = [];
+nodes.forEach((a, i) =>
+  nodes.forEach((b, j) => {
+    if (j > i && Math.hypot(a.x - b.x, a.y - b.y) < 95) edges.push([i, j]);
+  }),
+);
+
+// bars + trend
+const bars = Array.from({ length: 12 }, (_, i) => 30 + Math.abs(Math.sin(i * 0.9 + 1)) * 70 + r() * 30);
+const heat = Array.from({ length: 5 * 8 }, () => r());
+
+// flow
+const flows = Array.from({ length: 7 }, (_, i) => {
+  const y = 40 + i * 28;
+  const a = 20 + r() * 30;
+  return `M -10 ${y} C 100 ${y - a}, 180 ${y + a}, 260 ${y - a / 2} S 380 ${y + a / 2}, 420 ${y}`;
+});
+---
+
+<svg
+  class:list={['cover h-full w-full', cls]}
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <pattern id={`g-${type}`} width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0H0V20" fill="none" stroke-width="1" style="stroke:var(--grid)"></path>
+    </pattern>
+    <radialGradient id={`rg-${type}`} cx="70%" cy="30%" r="70%">
+      <stop offset="0" stop-opacity="0.22" style="stop-color:var(--accent)"></stop>
+      <stop offset="1" stop-opacity="0" style="stop-color:var(--accent)"></stop>
+    </radialGradient>
+  </defs>
+  <rect width={W} height={H} style="fill:var(--surface-2)"></rect>
+  <rect width={W} height={H} fill={`url(#g-${type})`}></rect>
+  <rect width={W} height={H} fill={`url(#rg-${type})`}></rect>
+
+  {
+    type === 'network' && (
+      <g class="cover-art">
+        {edges.map(([i, j]) => (
+          <line x1={nodes[i].x} y1={nodes[i].y} x2={nodes[j].x} y2={nodes[j].y} stroke-opacity="0.35" stroke-width="1"  style="stroke:var(--accent)" />
+        ))}
+        {nodes.map((n) => (
+          <circle cx={n.x} cy={n.y} r={n.s} fill-opacity="0.85"  style="fill:var(--accent)" />
+        ))}
+      </g>
+    )
+  }
+
+  {
+    type === 'leaf' && (
+      <g class="cover-art" fill="none" style="stroke:var(--accent)">
+        <path d="M200 215 C 120 190, 105 95, 200 35 C 295 95, 280 190, 200 215 Z" stroke-opacity="0.8" stroke-width="1.5" />
+        <path d="M200 215 V 50" stroke-opacity="0.6" />
+        {[70, 100, 130, 160, 185].map((y, i) => (
+          <>
+            <path d={`M200 ${y} Q ${170 - i * 2} ${y - 12} ${150 - i * 3} ${y - 28}`} stroke-opacity="0.45" />
+            <path d={`M200 ${y} Q ${230 + i * 2} ${y - 12} ${250 + i * 3} ${y - 28}`} stroke-opacity="0.45" />
+          </>
+        ))}
+        <rect x="236" y="70" width="58" height="46" rx="4" stroke-opacity="0.9" stroke-dasharray="4 3" />
+        <rect x="236" y="58" width="44" height="12" fill-opacity="0.9" stroke="none" rx="2"  style="fill:var(--accent)" />
+        {Array.from({ length: 6 }, (_, i) => (
+          <circle cx={60 + (i % 2) * 22} cy={60 + Math.floor(i / 2) * 22} r="6" fill-opacity={0.15 + i * 0.12} stroke="none"  style="fill:var(--accent)" />
+        ))}
+      </g>
+    )
+  }
+
+  {
+    type === 'bars' && (
+      <g class="cover-art">
+        {[0, 1, 2].map((i) => (
+          <rect x={28 + i * 62} y="24" width="54" height="34" rx="5"  style="fill:var(--surface);stroke:var(--line-strong)" />
+        ))}
+        {[0, 1, 2].map((i) => (
+          <rect x={36 + i * 62} y="42" width={18 + i * 6} height="6" rx="2" fill-opacity="0.8"  style="fill:var(--accent)" />
+        ))}
+        {bars.map((b, i) => (
+          <rect x={30 + i * 14.5} y={220 - b} width="9" height={b} rx="2" fill-opacity={0.25 + (i / bars.length) * 0.5}  style="fill:var(--accent)" />
+        ))}
+        <polyline
+          points={bars.map((b, i) => `${34.5 + i * 14.5},${210 - b}`).join(' ')}
+          fill="none"
+          style="stroke:var(--accent-2)"
+          stroke-width="1.5"
+        />
+        {heat.map((v, i) => (
+          <rect x={232 + (i % 8) * 18} y={84 + Math.floor(i / 8) * 18} width="15" height="15" rx="2" fill-opacity={0.08 + v * 0.75}  style="fill:var(--accent)" />
+        ))}
+      </g>
+    )
+  }
+
+  {
+    type === 'flow' && (
+      <g class="cover-art" fill="none">
+        {flows.map((d, i) => (
+          <path d={d} stroke-opacity={0.15 + i * 0.09} stroke-width="1.4"  style="stroke:var(--accent)" />
+        ))}
+        {Array.from({ length: 14 }, () => (
+          <circle cx={20 + r() * 360} cy={30 + r() * 190} r={1.5 + r() * 2} fill-opacity="0.8"  style="fill:var(--accent-2)" />
+        ))}
+        <circle cx="290" cy="150" r="26" stroke-width="1.5"  style="stroke:var(--accent)" />
+        <circle cx="200" cy="150" r="26" stroke-width="1.5"  style="stroke:var(--accent)" />
+        <path d="M200 150 L 228 108 L 270 108 L 290 150 M 228 108 L 245 150 L 290 150" stroke-width="1.5"  style="stroke:var(--accent)" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .cover-art {
+    transform-origin: 50% 50%;
+    transition: transform 1.2s var(--ease-out-expo);
+  }
+  :global(.group:hover) .cover-art {
+    transform: scale(1.05);
+  }
+</style>

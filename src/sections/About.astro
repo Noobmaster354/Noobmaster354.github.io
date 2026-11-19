@@ -1,0 +1,84 @@
+---
+import SectionHeading from '../components/SectionHeading.astro';
+import { t } from '../i18n/utils';
+import { allSkills, type Lang } from '../data/content';
+import { projects } from '../data/projects';
+import { site } from '../data/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const ui = t(lang).about;
+
+// Angka nyata, diturunkan langsung dari data (bukan karangan)
+const stats = [
+  { value: projects.length, label: ui.statProjects },
+  { value: allSkills.filter((s) => s.icon).length, label: ui.statTools },
+];
+---
+
+<section id="about" class="relative py-24 sm:py-32" aria-labelledby="about-title">
+  <div class="container-x grid gap-12 lg:grid-cols-12 lg:gap-16">
+    <div class="lg:col-span-7">
+      <SectionHeading id="about-title" eyebrow={ui.eyebrow} title={ui.title} />
+      <div class="space-y-5 text-pretty text-base leading-relaxed text-muted sm:text-lg" data-reveal-group>
+        {ui.paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+
+    <aside class="lg:col-span-5 lg:pt-24" data-reveal>
+      <div class="card card-glow" data-spotlight>
+        <div class="card-inner p-6 sm:p-8">
+          <span class="spotlight" aria-hidden="true"></span>
+          <div class="relative">
+            <!-- TODO (opsional): ganti monogram dengan foto profil via astro:assets <Image alt={ui.photoAlt} /> -->
+            <div class="flex items-center gap-4">
+              <span
+                class="grid size-14 place-items-center rounded-2xl border border-line-strong bg-surface-2 font-mono text-lg font-semibold text-accent"
+                aria-hidden="true">{site.initials}</span
+              >
+              <div>
+                <p class="font-medium text-fg">{site.name}</p>
+                <p class="font-mono text-xs text-subtle">@{site.nickname.toLowerCase()}</p>
+              </div>
+            </div>
+
+            <div class="hairline my-6"></div>
+
+            <dl class="space-y-4">
+              {
+                ui.facts.map((f) => (
+                  <div class="grid grid-cols-[6.5rem_1fr] gap-3 text-sm">
+                    <dt class="font-mono text-xs uppercase tracking-wider text-subtle">{f.label}</dt>
+                    <dd class="text-fg">{f.value}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+
+            <div class="hairline my-6"></div>
+
+            <dl class="grid grid-cols-2 gap-4">
+              {
+                stats.map((s) => (
+                  <div>
+                    <dt class="sr-only">{s.label}</dt>
+                    <dd>
+                      <span class="block text-4xl font-semibold tabular-nums tracking-tight text-fg" data-counter={s.value}>
+                        {s.value}
+                      </span>
+                      <span class="mt-1 block font-mono text-xs text-subtle" aria-hidden="true">
+                        {s.label}
+                      </span>
+                    </dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

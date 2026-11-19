@@ -1,0 +1,24 @@
+---
+import { t } from '../i18n/utils';
+import { site } from '../data/site';
+import type { Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const ui = t(lang);
+---
+
+<!-- Intro singkat (sekali per sesi). Dianimasikan oleh scripts/motion/intro.ts -->
+<div class="intro" aria-hidden="true" data-intro>
+  <div class="flex flex-col items-center gap-4">
+    <span class="intro-mark grid size-14 place-items-center rounded-xl border border-line-strong font-mono text-base font-semibold text-accent">
+      {site.initials}
+    </span>
+    <div class="h-px w-40 overflow-hidden bg-line">
+      <div class="intro-bar h-full w-full origin-left scale-x-0 bg-accent"></div>
+    </div>
+    <span class="font-mono text-[0.7rem] uppercase tracking-[0.25em] text-subtle">{ui.intro.label}</span>
+  </div>
+</div>

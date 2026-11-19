@@ -1,27 +1,105 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Seo from '../components/Seo.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Intro from '../components/Intro.astro';
+import Toast from '../components/Toast.astro';
+import { t } from '../i18n/utils';
+import type { Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const { lang, title, description, type, noindex } = Astro.props;
+const ui = t(lang);
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+<html lang={ui.meta.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f8fa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#06080c" />
+    <meta name="color-scheme" content="dark light" />
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+    <!-- Tema & motion ditentukan SEBELUM render → tanpa kedipan -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        function theme() {
+          var s = null;
+          try { s = localStorage.getItem('theme'); } catch (e) {}
+          var t = s === 'light' || s === 'dark' ? s : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          d.setAttribute('data-theme', t);
+        }
+        function motion() {
+          d.setAttribute('data-motion', matchMedia('(prefers-reduced-motion: reduce)').matches ? 'off' : 'on');
+        }
+        theme();
+        motion();
+        if (d.getAttribute('data-motion') === 'on') {
+          try {
+            if (!sessionStorage.getItem('intro-seen')) {
+              d.setAttribute('data-intro', 'on');
+              sessionStorage.setItem('intro-seen', '1');
+            }
+          } catch (e) {}
+        }
+        // Pengaman: bila skrip animasi gagal dimuat, konten tetap tampil
+        setTimeout(function () {
+          if (!d.hasAttribute('data-motion-ready')) {
+            d.setAttribute('data-motion', 'off');
+            d.removeAttribute('data-intro');
+          }
+        }, 3500);
+        if (!window.__themeBound) {
+          window.__themeBound = true;
+          document.addEventListener('astro:after-swap', function () {
+            theme();
+            motion();
+            d.setAttribute('data-motion-ready', '');
+          });
+        }
+      })();
+    </script>
+
+    <Seo
+      lang={lang}
+      title={title ?? ui.meta.title}
+      description={description ?? ui.meta.description}
+      type={type}
+      noindex={noindex}
+    />
+    <ClientRouter fallback="swap" />
+  </head>
+  <body class="relative">
+    <a href="#main" class="skip-link">{ui.a11y.skip}</a>
+    <div class="scroll-progress" aria-hidden="true" transition:persist="progress"></div>
+    <div class="cursor-glow" aria-hidden="true" transition:persist="cursor"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <Intro lang={lang} />
+
+    <Navbar lang={lang} />
+
+    <main id="main" tabindex="-1" class="relative z-[2] outline-none">
+      <slot />
+    </main>
+
+    <Footer lang={lang} />
+    <Toast />
+
+    <script>
+      import '../scripts/ui';
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

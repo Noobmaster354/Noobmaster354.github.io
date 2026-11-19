@@ -1,0 +1,88 @@
+---
+/**
+ * Slot embed dashboard (Tableau Public / Looker Studio).
+ * Pola click-to-load: iframe pihak ketiga baru dibuat saat tombol ditekan
+ * (lihat scripts/ui.ts) → halaman tetap ringan & skor Lighthouse terjaga.
+ *
+ * Format URL:
+ *  - Tableau Public : https://public.tableau.com/views/<Workbook>/<Sheet>?:showVizHome=no&:embed=true
+ *  - Looker Studio  : https://lookerstudio.google.com/embed/reporting/<id>/page/<pageId>
+ */
+import Play from '@lucide/astro/icons/play';
+import ExternalLink from '@lucide/astro/icons/external-link';
+import Monitor from '@lucide/astro/icons/monitor';
+import { t, isTodo } from '../i18n/utils';
+import type { Lang } from '../data/content';
+
+interface Props {
+  url: string;
+  title: string;
+  lang: Lang;
+  provider: 'tableau' | 'looker';
+  ratio?: string;
+}
+const { url, title, lang, provider, ratio = '16 / 10' } = Astro.props;
+const ui = t(lang).caseStudy;
+const ready = !isTodo(url);
+const providerName = provider === 'tableau' ? 'Tableau Public' : 'Looker Studio';
+const openUrl = provider === 'tableau' ? url.replace(/[?&]:embed=true/, '') : url.replace('/embed/', '/');
+---
+
+<figure class="embed" style={`--ratio:${ratio}`} data-embed data-src={ready ? url : undefined} data-title={title}>
+  <div class="card overflow-hidden">
+    <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+      <span class="flex items-center gap-2 font-mono text-xs text-subtle">
+        <span class="flex gap-1.5" aria-hidden="true">
+          <span class="size-2.5 rounded-full bg-line-strong"></span>
+          <span class="size-2.5 rounded-full bg-line-strong"></span>
+          <span class="size-2.5 rounded-full bg-line-strong"></span>
+        </span>
+        {providerName}
+      </span>
+      {
+        ready && (
+          <a href={openUrl} target="_blank" rel="noopener noreferrer" class="link-u inline-flex items-center gap-1.5 text-xs text-muted hover:text-fg">
+            {ui.embedOpen}
+            <ExternalLink size={13} aria-hidden="true" />
+          </a>
+        )
+      }
+    </div>
+    <div class="embed-stage relative bg-surface-2" data-embed-stage>
+      <div class="bg-grid absolute inset-0" aria-hidden="true"></div>
+      <div class="embed-facade absolute inset-0 grid place-items-center p-6 text-center">
+        {
+          ready ? (
+            <div class="flex flex-col items-center gap-4">
+              <button type="button" class="btn btn-primary" data-embed-load data-magnetic>
+                <Play size={15} aria-hidden="true" />
+                <span data-magnetic-inner>{ui.embedLoad}</span>
+              </button>
+              <p class="max-w-sm text-xs text-subtle">{ui.embedHint}</p>
+            </div>
+          ) : (
+            <div class="flex flex-col items-center gap-3 text-subtle">
+              <Monitor size={28} aria-hidden="true" />
+              <p class="font-mono text-xs">{ui.embedEmpty}</p>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+  <figcaption class="sr-only">{title}</figcaption>
+</figure>
+
+<style>
+  .embed-stage {
+    aspect-ratio: 4 / 5;
+  }
+  @media (min-width: 640px) {
+    .embed-stage {
+      aspect-ratio: var(--ratio);
+    }
+  }
+  .embed:global(.is-loaded) .embed-facade {
+    display: none;
+  }
+</style>

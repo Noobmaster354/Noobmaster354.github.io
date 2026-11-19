@@ -1,0 +1,86 @@
+---
+/**
+ * <PlexusBackground /> — background jaringan titik & garis beranimasi.
+ *
+ * Contoh:
+ *   <PlexusBackground />                                  // full layar, menempel (fixed)
+ *   <PlexusBackground position="absolute" side="right" /> // hanya di section induknya
+ */
+interface Props {
+  side?: 'left' | 'right';
+  position?: 'fixed' | 'absolute';
+  density?: number;        // 0.5 – 1.5
+  interactive?: boolean;
+  lightColor?: string;     // "R,G,B" untuk tema terang
+  darkColor?: string;      // "R,G,B" untuk tema gelap
+  opacity?: number;        // 0 – 1
+  class?: string;
+}
+
+const {
+  side = 'left',
+  position = 'fixed',
+  density = 1,
+  interactive = true,
+  lightColor = '38,38,44',
+  darkColor = '203,213,225',
+  opacity = 1,
+  class: className = '',
+} = Astro.props;
+---
+
+<canvas
+  class:list={['plexus-bg', className]}
+  data-side={side}
+  data-density={density}
+  data-interactive={String(interactive)}
+  data-light={lightColor}
+  data-dark={darkColor}
+  style={`position:${position};opacity:${opacity}`}
+  aria-hidden="true"
+></canvas>
+
+<style>
+  .plexus-bg {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>
+
+<script>
+  import { createPlexus } from '../scripts/plexus.js';
+
+  const instances = new Map<HTMLCanvasElement, () => void>();
+
+  function mount() {
+    document.querySelectorAll<HTMLCanvasElement>('canvas.plexus-bg').forEach((c) => {
+      if (instances.has(c)) return;
+      const d = c.dataset;
+      instances.set(
+        c,
+        createPlexus(c, {
+          side: d.side,
+          density: Number(d.density) || 1,
+          interactive: d.interactive !== 'false',
+          lightColor: d.light,
+          darkColor: d.dark,
+        })
+      );
+    });
+  }
+
+  // Bersihkan instance yang canvas-nya sudah hilang dari halaman (View Transitions / ClientRouter)
+  function cleanup() {
+    for (const [c, destroy] of instances) {
+      if (!document.contains(c)) { destroy(); instances.delete(c); }
+    }
+  }
+
+  mount();
+  document.addEventListener('astro:page-load', () => { cleanup(); mount(); });
+  document.addEventListener('astro:after-swap', cleanup);
+</script>

@@ -1,0 +1,68 @@
+---
+import Briefcase from '@lucide/astro/icons/briefcase';
+import GraduationCap from '@lucide/astro/icons/graduation-cap';
+import Layers from '@lucide/astro/icons/layers';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import SectionHeading from '../components/SectionHeading.astro';
+import { t, filled, isTodo } from '../i18n/utils';
+import { experience, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const ui = t(lang);
+const items = experience.filter((e) => !e.draft);
+const icons = { work: Briefcase, program: Layers, education: GraduationCap, activity: Sparkles };
+---
+
+<section id="experience" class="relative py-24 sm:py-32" aria-labelledby="experience-title">
+  <div class="container-x grid gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <div class="lg:sticky lg:top-28">
+        <SectionHeading id="experience-title" eyebrow={ui.experience.eyebrow} title={ui.experience.title} />
+      </div>
+    </div>
+
+    <ol class="timeline relative lg:col-span-8" data-reveal-group>
+      {
+        items.map((e) => {
+          const Icon = icons[e.kind];
+          const points = filled(e.points[lang]);
+          return (
+            <li class="relative pb-12 pl-12 last:pb-0 sm:pl-16">
+              <span class="absolute left-0 top-0 grid size-9 place-items-center rounded-full border border-line-strong bg-surface text-accent">
+                <Icon size={16} aria-hidden="true" />
+              </span>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-subtle">
+                <span>{isTodo(e.period[lang]) ? ui.caseStudy.pending : e.period[lang]}</span>
+                {e.current && <span class="chip chip-accent py-0.5">{ui.experience.present}</span>}
+              </div>
+              <h3 class="mt-2 text-lg font-semibold tracking-tight text-fg sm:text-xl">{e.title[lang]}</h3>
+              <p class="text-sm text-muted">{e.org}</p>
+              {points.length > 0 && (
+                <ul class="prose-case mt-3 text-sm">
+                  {points.map((pt) => (
+                    <li>{pt}</li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 1.125rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--line) 30%, var(--line) 80%, transparent);
+  }
+</style>

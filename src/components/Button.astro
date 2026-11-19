@@ -1,0 +1,28 @@
+---
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+
+interface Props {
+  href: string;
+  variant?: 'primary' | 'ghost';
+  icon?: boolean;
+  external?: boolean;
+  download?: boolean;
+  class?: string;
+  [key: `data-${string}`]: string | undefined;
+}
+
+const { href, variant = 'primary', icon = true, external = false, download = false, class: cls = '', ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['btn', variant === 'primary' ? 'btn-primary' : 'btn-ghost', cls]}
+  data-magnetic
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  download={download || undefined}
+  {...rest}
+>
+  <span class="relative" data-magnetic-inner><slot /></span>
+  {icon && <ArrowUpRight class="btn-icon relative" size={16} aria-hidden="true" />}
+</a>

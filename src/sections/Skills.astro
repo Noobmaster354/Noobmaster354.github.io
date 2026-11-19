@@ -1,0 +1,56 @@
+---
+import SectionHeading from '../components/SectionHeading.astro';
+import BrandIcon from '../components/BrandIcon.astro';
+import { t } from '../i18n/utils';
+import { skillGroups, allSkills, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const ui = t(lang).skills;
+---
+
+<section id="skills" class="relative py-24 sm:py-32" aria-labelledby="skills-title">
+  <div class="container-x">
+    <SectionHeading id="skills-title" eyebrow={ui.eyebrow} title={ui.title} intro={ui.intro} />
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
+      {
+        skillGroups.map((g, gi) => (
+          <div class="card card-glow h-full" data-spotlight>
+            <div class="card-inner p-6">
+              <span class="spotlight" aria-hidden="true" />
+              <p class="font-mono text-xs text-subtle">{String(gi + 1).padStart(2, '0')}</p>
+              <h3 class="mt-2 font-semibold text-fg">{g.name[lang]}</h3>
+              <ul class="mt-5 flex flex-wrap gap-2" data-chips>
+                {g.items.map((s) => (
+                  <li class="chip">
+                    {s.icon && <BrandIcon name={s.icon} size={13} />}
+                    {s.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Marquee dekoratif (konten sama sudah ada di daftar di atas) -->
+  <div class="marquee mt-16 sm:mt-20" aria-hidden="true" data-speed="0.04">
+    {
+      [0, 1].map(() => (
+        <ul class="marquee-track">
+          {allSkills.map((s) => (
+            <li class="flex items-center gap-2 whitespace-nowrap rounded-full border border-line px-4 py-2 font-mono text-sm text-muted">
+              {s.icon && <BrandIcon name={s.icon} size={15} />}
+              {s.label}
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</section>

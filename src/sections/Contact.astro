@@ -1,0 +1,121 @@
+---
+import Mail from '@lucide/astro/icons/mail';
+import Copy from '@lucide/astro/icons/copy';
+import Download from '@lucide/astro/icons/download';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import SectionHeading from '../components/SectionHeading.astro';
+import BrandIcon from '../components/BrandIcon.astro';
+import { t, isTodo } from '../i18n/utils';
+import { site } from '../data/site';
+import type { Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const ui = t(lang);
+const c = ui.contact;
+const { email, whatsapp, linkedin, github, cv } = site.contact;
+
+const waHref = isTodo(whatsapp) ? '' : `https://wa.me/${whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}`;
+
+const channels = [
+  { label: c.whatsapp, icon: 'whatsapp', href: waHref, value: isTodo(whatsapp) ? '' : `+${whatsapp}` },
+  { label: c.linkedin, icon: 'linkedin', href: isTodo(linkedin) ? '' : linkedin, value: 'LinkedIn' },
+  { label: c.github, icon: 'github', href: isTodo(github) ? '' : github, value: github.replace(/^https?:\/\/(www\.)?/, '') },
+];
+const emailReady = !isTodo(email);
+---
+
+<section id="contact" class="relative py-24 sm:py-32" aria-labelledby="contact-title">
+  <div class="bg-grid pointer-events-none absolute inset-0 -z-10 opacity-70" aria-hidden="true"></div>
+  <div class="container-x">
+    <SectionHeading id="contact-title" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
+
+    <div class="grid gap-5 lg:grid-cols-5" data-reveal-group>
+      <!-- Email -->
+      <div class="card card-glow lg:col-span-3" data-spotlight>
+        <div class="card-inner flex h-full flex-col justify-between gap-8 p-6 sm:p-8">
+          <span class="spotlight" aria-hidden="true"></span>
+          <div>
+            <p class="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-subtle">
+              <Mail size={14} aria-hidden="true" />
+              {c.email}
+            </p>
+            {
+              emailReady ? (
+                <a href={`mailto:${email}`} class="link-u mt-4 break-all text-2xl font-semibold tracking-tight text-fg sm:text-3xl">
+                  {email}
+                </a>
+              ) : (
+                <p class="mt-4 text-2xl font-semibold tracking-tight text-subtle sm:text-3xl">{c.unavailable}</p>
+              )
+            }
+          </div>
+          <div class="flex flex-wrap gap-3">
+            {
+              emailReady && (
+                <>
+                  <a href={`mailto:${email}`} class="btn btn-primary" data-magnetic>
+                    <span data-magnetic-inner>{c.email}</span>
+                    <ArrowUpRight class="btn-icon" size={16} aria-hidden="true" />
+                  </a>
+                  <button type="button" class="btn btn-ghost" data-copy={email} data-msg-ok={c.copied} data-msg-fail={c.copyFailed} data-magnetic>
+                    <Copy size={15} aria-hidden="true" />
+                    <span data-magnetic-inner>{c.copyEmail}</span>
+                  </button>
+                </>
+              )
+            }
+            <a href={cv} class="btn btn-ghost" download data-magnetic>
+              <Download size={15} aria-hidden="true" />
+              <span data-magnetic-inner>{c.cv}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kanal lain -->
+      <ul class="grid gap-5 lg:col-span-2">
+        {
+          channels.map((ch) => (
+            <li>
+              {ch.href ? (
+                <a
+                  href={ch.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card group flex items-center justify-between gap-4 p-5 transition-colors hover:border-accent"
+                  data-spotlight
+                >
+                  <span class="spotlight" aria-hidden="true" />
+                  <span class="flex items-center gap-4">
+                    <span class="grid size-11 place-items-center rounded-xl border border-line bg-surface-2 text-fg">
+                      <BrandIcon name={ch.icon} size={18} />
+                    </span>
+                    <span>
+                      <span class="block font-medium text-fg">{ch.label}</span>
+                      <span class="block font-mono text-xs text-subtle">{ch.value}</span>
+                    </span>
+                  </span>
+                  <ArrowUpRight size={18} class="text-subtle transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" aria-hidden="true" />
+                  <span class="sr-only">{ui.a11y.externalLink}</span>
+                </a>
+              ) : (
+                <div class="card flex items-center gap-4 border-dashed p-5">
+                  <span class="grid size-11 place-items-center rounded-xl border border-line bg-surface-2 text-subtle">
+                    <BrandIcon name={ch.icon} size={18} />
+                  </span>
+                  <span>
+                    <span class="block font-medium text-fg">{ch.label}</span>
+                    <span class="block font-mono text-xs text-subtle">{c.unavailable}</span>
+                  </span>
+                </div>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
