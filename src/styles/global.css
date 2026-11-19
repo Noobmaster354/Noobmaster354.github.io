@@ -126,7 +126,7 @@ html.lenis body {
   }
 
   .skip-link {
-    @apply fixed left-4 top-4 z-[100] rounded-md px-4 py-2 font-mono text-sm;
+    @apply fixed left-4 top-4 z-100 rounded-md px-4 py-2 font-mono text-sm;
     background: var(--accent);
     color: var(--accent-fg);
     transform: translateY(-200%);
