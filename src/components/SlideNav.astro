@@ -1,0 +1,36 @@
+---
+import { t } from '../i18n/utils';
+import type { Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const ui = t(lang);
+
+// Urutan sama dengan section di views/Home.astro
+const items = [
+  { id: 'top', label: ui.nav.home },
+  { id: 'about', label: ui.nav.about },
+  { id: 'projects', label: ui.nav.projects },
+  { id: 'experience', label: ui.nav.experience },
+  { id: 'skills', label: ui.nav.skills },
+  { id: 'contact', label: ui.nav.contact },
+];
+---
+
+<!-- Indikator slide: hanya ≥768px. Link anchor biasa → scroll halus ditangani motion/lenis.ts -->
+<nav class="slide-nav hidden md:block" aria-label={ui.a11y.slideNav} data-slide-nav>
+  <ul class="flex flex-col items-center">
+    {
+      items.map((it, i) => (
+        <li>
+          <a href={`#${it.id}`} data-slide-link={it.id} aria-current={i === 0 ? 'true' : undefined}>
+            <span class="dot" aria-hidden="true" />
+            <span class="label">{it.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

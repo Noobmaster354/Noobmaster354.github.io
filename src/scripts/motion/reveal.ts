@@ -1,8 +1,11 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import { whenOpen } from './slides';
+import { isLite } from './curtain';
 
 const EASE = 'expo.out';
+const ENTER = 'power4.out';
 
 /** Intro singkat (sekali per sesi, ±0.7 dtk). Mengembalikan delay untuk animasi hero. */
 export function intro(): number {
@@ -26,25 +29,27 @@ export function hero(delay: number) {
   const section = document.querySelector<HTMLElement>('.hero');
   if (!section) return;
   const tl = gsap.timeline({ delay });
-  tl.from(section.querySelectorAll('.hero-line'), { y: 36, duration: 1.2, ease: EASE, stagger: 0.08 })
-    .fromTo(
-      section.querySelectorAll('.hero-item'),
-      { opacity: 0, y: 14 },
-      { opacity: 1, y: 0, duration: 0.9, ease: EASE, stagger: 0.06 },
-      0.1,
-    );
-  const canvas = section.querySelector('canvas');
-  if (canvas) tl.from(canvas, { opacity: 0, duration: 1.6, ease: 'power2.out' }, 0);
+  tl.from(section.querySelectorAll('.hero-line'), { y: 36, duration: 1.2, ease: EASE, stagger: 0.08 }).fromTo(
+    section.querySelectorAll('.hero-item'),
+    { opacity: 0, y: 14 },
+    { opacity: 1, y: 0, duration: 0.9, ease: EASE, stagger: 0.06 },
+    0.1,
+  );
 }
 
-/** Elemen tunggal muncul saat scroll: fade + slide */
+const rise = () => (isLite() ? 32 : 60);
+
+/** Elemen tunggal muncul saat scroll (setelah tirai section terbuka): fade + naik dari bawah */
 export function reveals() {
   gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 1, ease: EASE, scrollTrigger: { trigger: el, start: 'top 90%', once: true } },
-    );
+    gsap.set(el, { y: rise() });
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 90%',
+      once: true,
+      onEnter: () =>
+        whenOpen(el, (delay) => gsap.to(el, { opacity: 1, y: 0, duration: 1.05, ease: ENTER, delay, overwrite: 'auto' })),
+    });
   });
 }
 
@@ -53,27 +58,33 @@ export function groups() {
   document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach((group) => {
     const items = Array.from(group.children) as HTMLElement[];
     if (!items.length) return;
-    gsap.set(items, { opacity: 0, y: 32 });
+    gsap.set(items, { opacity: 0, y: rise() });
     ScrollTrigger.batch(items, {
       start: 'top 90%',
       once: true,
-      onEnter: (batch) => {
-        gsap.to(batch, { opacity: 1, y: 0, duration: 1, ease: EASE, stagger: 0.09, overwrite: true });
-        batch.forEach((item) => {
-          const chips = (item as HTMLElement).querySelectorAll('[data-chips] > li');
-          if (chips.length)
-            gsap.fromTo(chips, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: EASE, stagger: 0.04, delay: 0.25 });
-        });
-      },
+      onEnter: (batch) =>
+        whenOpen(group, (delay) => {
+          gsap.to(batch, { opacity: 1, y: 0, duration: 1, ease: ENTER, stagger: 0.08, delay: delay + 0.1, overwrite: true });
+          batch.forEach((item) => {
+            const chips = (item as HTMLElement).querySelectorAll('[data-chips] > li');
+            if (chips.length)
+              gsap.fromTo(
+                chips,
+                { opacity: 0, y: 10 },
+                { opacity: 1, y: 0, duration: 0.6, ease: EASE, stagger: 0.04, delay: delay + 0.35 },
+              );
+          });
+        }),
     });
   });
 }
 
-/** Judul bagian: reveal per kata di dalam mask per baris (GSAP SplitText) */
+/** Judul bagian: reveal per kata di dalam mask per baris (GSAP SplitText), setelah tirai terbuka */
 export function splitHeadings(isAlive: () => boolean) {
   return () => {
     if (!isAlive()) return;
     document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+      let revealed = false;
       try {
         SplitText.create(el, {
           type: 'lines,words',
@@ -82,13 +93,25 @@ export function splitHeadings(isAlive: () => boolean) {
           aria: 'auto',
           onSplit(self) {
             el.classList.add('is-split');
-            return gsap.from(self.words, {
+            if (revealed) return;
+            // from() + paused: kata langsung tersembunyi di bawah mask, diputar saat siap
+            const tween = gsap.from(self.words, {
               yPercent: 110,
               duration: 1.1,
-              ease: EASE,
+              ease: ENTER,
               stagger: 0.05,
-              scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+              paused: true,
+              onStart: () => {
+                revealed = true;
+              },
             });
+            ScrollTrigger.create({
+              trigger: el,
+              start: 'top 90%',
+              once: true,
+              onEnter: () => whenOpen(el, (delay) => gsap.delayedCall(delay, () => tween.play())),
+            });
+            return tween;
           },
         });
       } catch {
@@ -105,25 +128,34 @@ export function counters() {
     const end = Number(el.dataset.counter) || 0;
     const obj = { v: 0 };
     el.textContent = '0';
-    gsap.to(obj, {
-      v: end,
-      duration: 1.6,
-      ease: 'power2.out',
-      onUpdate: () => {
-        el.textContent = String(Math.round(obj.v));
-      },
-      onComplete: () => {
-        el.textContent = String(end);
-      },
-      scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 92%',
+      once: true,
+      onEnter: () =>
+        whenOpen(el, (delay) =>
+          gsap.to(obj, {
+            v: end,
+            duration: 1.6,
+            delay: delay + 0.2,
+            ease: 'power2.out',
+            onUpdate: () => {
+              el.textContent = String(Math.round(obj.v));
+            },
+            onComplete: () => {
+              el.textContent = String(end);
+            },
+          }),
+        ),
     });
   });
 }
 
-/** Parallax halus berbasis scroll untuk elemen [data-speed] */
+/** Parallax halus berbasis scroll untuk elemen [data-speed] (dikurangi di mode ringan) */
 export function parallax() {
+  const factor = isLite() ? 0.5 : 1;
   gsap.utils.toArray<HTMLElement>('[data-speed]').forEach((el) => {
-    const speed = parseFloat(el.dataset.speed ?? '0');
+    const speed = parseFloat(el.dataset.speed ?? '0') * factor;
     if (!speed) return;
     const heroEl = el.closest<HTMLElement>('.hero');
     gsap.fromTo(

@@ -1,6 +1,5 @@
 ---
 import ArrowDown from '@lucide/astro/icons/arrow-down';
-import PlexusBackground from '../components/PlexusBackground.astro';
 import Button from '../components/Button.astro';
 import Typewriter from '../components/Typewriter.astro';
 import { t } from '../i18n/utils';
@@ -11,48 +10,38 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const ui = t(lang).hero;
+const all = t(lang);
+const ui = all.hero;
 ---
 
-<section id="top" class="hero relative isolate flex min-h-[100svh] items-center overflow-hidden pb-20 pt-28" aria-labelledby="hero-title">
-  <!-- Latar: grid halus, glow, plexus -->
+<!-- Plexus kini latar global (Layout.astro), jadi hero hanya berisi grid, glow, dan konten -->
+<section
+  id="top"
+  class="hero relative isolate flex min-h-[100svh] items-center overflow-hidden pb-20 pt-28"
+  aria-labelledby="hero-title"
+  data-slide
+  data-slide-label={all.nav.home}
+>
   <div class="bg-grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="hero-glow pointer-events-none absolute -z-10" aria-hidden="true" data-speed="0.25"></div>
-  <PlexusBackground
-    position="absolute"
-    side="right"
-    density={1}
-    darkColor="34,211,238"
-    lightColor="8,145,178"
-    class="-z-10 hero-plexus"
-  />
-  <div class="hero-fade pointer-events-none absolute inset-x-0 bottom-0 z-0 h-40" aria-hidden="true"></div>
 
   <div class="container-x relative z-[1]" data-hero>
-    <div class="max-w-3xl" data-speed="-0.08">
-      <p class="hero-item chip chip-accent mb-8">
-        <span class="relative flex size-2" aria-hidden="true">
-          <span class="pulse-dot absolute inset-0 rounded-full bg-accent"></span>
-          <span class="relative size-2 rounded-full bg-accent"></span>
-        </span>
-        {ui.status}
-      </p>
-
-      <h1 id="hero-title" class="text-balance">
-        <span class="hero-item mb-3 block font-mono text-sm text-muted sm:text-base">{ui.greeting}</span>
-        <span class="hero-line block text-[clamp(2.5rem,8vw,5.5rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-fg">
+    <div class="max-w-2xl" data-speed="-0.08">
+      <h1 id="hero-title">
+        <span class="hero-item mb-4 block font-mono text-sm text-muted">{ui.greeting}</span>
+        <span class="hero-line block text-[clamp(1.75rem,3.5vw,2.75rem)] font-medium leading-[1.1] tracking-[-0.025em] text-fg">
           {site.name}
         </span>
-        <span class="hero-line hero-role mt-2 block text-[clamp(2rem,6vw,4rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
+        <span class="hero-line mt-2 block font-mono text-[clamp(1rem,1.6vw,1.25rem)] font-normal leading-snug text-accent">
           {ui.role}
         </span>
       </h1>
 
-      <p class="hero-line mt-7 max-w-xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
+      <p class="hero-line mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
         {ui.tagline}
       </p>
 
-      <Typewriter prefix={ui.typingPrefix} words={ui.typingWords} class="hero-item mt-6 h-6 text-sm sm:text-base" />
+      <Typewriter prefix={ui.typingPrefix} words={ui.typingWords} class="hero-item mt-5 h-6 text-sm sm:text-base" />
 
       <div class="hero-item mt-9 flex flex-wrap items-center gap-3">
         <Button href="#projects" data-scroll-link="">{ui.ctaProjects}</Button>
@@ -83,12 +72,6 @@ const ui = t(lang).hero;
 </section>
 
 <style>
-  .hero-role {
-    background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 90%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
   .hero-glow {
     right: -10rem;
     top: 10%;
@@ -97,9 +80,6 @@ const ui = t(lang).hero;
     border-radius: 9999px;
     background: radial-gradient(circle, var(--glow), transparent 65%);
     will-change: transform;
-  }
-  .hero-fade {
-    background: linear-gradient(to bottom, transparent, var(--bg));
   }
   .scroll-cue {
     animation: cue 2s var(--ease-out-expo) infinite;

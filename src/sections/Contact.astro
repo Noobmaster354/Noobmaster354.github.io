@@ -4,6 +4,7 @@ import Copy from '@lucide/astro/icons/copy';
 import Download from '@lucide/astro/icons/download';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import SectionHeading from '../components/SectionHeading.astro';
+import SlideCurtain from '../components/SlideCurtain.astro';
 import BrandIcon from '../components/BrandIcon.astro';
 import { t, isTodo } from '../i18n/utils';
 import { site } from '../data/site';
@@ -27,7 +28,8 @@ const channels = [
 const emailReady = !isTodo(email);
 ---
 
-<section id="contact" class="relative py-24 sm:py-32" aria-labelledby="contact-title">
+<section id="contact" class="relative py-24 sm:py-32" aria-labelledby="contact-title" data-slide>
+  <SlideCurtain />
   <div class="bg-grid pointer-events-none absolute inset-0 -z-10 opacity-70" aria-hidden="true"></div>
   <div class="container-x">
     <SectionHeading id="contact-title" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />

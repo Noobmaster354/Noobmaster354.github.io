@@ -377,6 +377,136 @@ html[data-motion="on"] [data-split].is-split {
   visibility: visible;
 }
 
+/* =========================================================
+   TIRAI / WIPE (transisi slide & antar halaman)
+   Lapisan: --bg (atas), --surface-2, --accent (bawah) + garis cyan menyala.
+   Hanya clip-path, transform & opacity yang dianimasikan.
+   ========================================================= */
+.slide-curtain,
+.page-curtain {
+  pointer-events: none;
+  overflow: clip;
+}
+.slide-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: none;
+}
+/* Hanya dipakai saat motion aktif; default lapisan tersembunyi (tidak menutupi konten) */
+html[data-motion="on"] .slide-curtain {
+  display: block;
+}
+.curtain-layer {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0% 100% 0% 0%);
+}
+.curtain-layer[data-layer="bg"] { background: var(--bg); }
+.curtain-layer[data-layer="surface"] { background: var(--surface-2); }
+.curtain-layer[data-layer="accent"] {
+  background: var(--accent);
+}
+.curtain-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px 1px var(--accent), 0 0 32px 4px var(--glow);
+  opacity: 0;
+  will-change: transform;
+}
+/* Tirai halaman: fixed penuh, default terbuka (tidak terlihat) */
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  visibility: hidden;
+}
+html[data-motion="off"] .page-curtain {
+  display: none;
+}
+
+/* Indikator slide (sisi kanan, desktop/tablet) */
+.slide-nav {
+  position: fixed;
+  right: 1.25rem;
+  top: 50%;
+  z-index: 40;
+  transform: translateY(-50%);
+}
+.slide-nav a {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+}
+.slide-nav .dot {
+  display: block;
+  width: 2px;
+  height: 0.9rem;
+  border-radius: 9999px;
+  background: var(--line-strong);
+  transform-origin: 50% 50%;
+  transition: transform 0.5s var(--ease-out-expo), background-color 0.3s ease;
+}
+.slide-nav a:hover .dot,
+.slide-nav a:focus-visible .dot {
+  background: var(--muted);
+}
+.slide-nav a[aria-current="true"] .dot {
+  background: var(--accent);
+  transform: scaleY(1.9);
+  box-shadow: 0 0 10px var(--glow);
+}
+.slide-nav .label {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  margin-right: 0.5rem;
+  white-space: nowrap;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  opacity: 0;
+  transform: translate(6px, -50%);
+  transition: opacity 0.25s ease, transform 0.35s var(--ease-out-expo);
+  pointer-events: none;
+}
+.slide-nav a:hover .label,
+.slide-nav a:focus-visible .label {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* Plexus global: wadah sticky setinggi layar di awal body, margin negatif agar tidak
+   mendorong konten. Diukur lebih ringan daripada canvas position:fixed (TBT Lighthouse). */
+.plexus-layer {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100lvh;
+  margin-bottom: -100lvh;
+  pointer-events: none;
+}
+.plexus-global {
+  animation: plexus-in 1.6s ease-out backwards;
+}
+@keyframes plexus-in {
+  from { opacity: 0; }
+}
+html[data-motion="off"] .plexus-global {
+  opacity: 0.4 !important;
+}
+
 /* Intro singkat */
 .intro {
   position: fixed;
@@ -444,18 +574,16 @@ html.has-cursor .cursor-glow {
 @keyframes blink {
   50% { opacity: 0; }
 }
-@keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.6); opacity: 0.3; }
-}
-.pulse-dot {
-  animation: pulse-dot 2.2s ease-in-out infinite;
-}
 
-/* View Transitions */
+/* View Transitions: saat motion aktif, tirai cyan yang menangani → snapshot ditukar instan.
+   Tanpa motion: crossfade singkat. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.35s;
+  animation-duration: 0.2s;
+}
+html[data-motion="on"]::view-transition-old(root),
+html[data-motion="on"]::view-transition-new(root) {
+  animation: none;
 }
 
 /* Hormati reduced motion */
@@ -472,4 +600,6 @@ html.has-cursor .cursor-glow {
   .marquee { display: none; }
   .caret { animation: none; }
   .cursor-glow { display: none; }
+  .slide-curtain,
+  .page-curtain { display: none !important; }
 }

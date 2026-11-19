@@ -15,13 +15,14 @@ const id = {
     ogLocale: 'id_ID',
     title: 'Satrio Faza Mubarok — Data Analyst',
     description:
-      'Portofolio Satrio Faza Mubarok, mahasiswa Sistem Informasi AMIKOM Yogyakarta dan Data Analyst Intern. Studi kasus dashboard, analisis data, dan machine learning terapan.',
+      'Portofolio Satrio Faza Mubarok, mahasiswa Sistem Informasi AMIKOM Yogyakarta yang membidik karier Data Analyst. Studi kasus dashboard, analisis data, dan machine learning terapan.',
     projectTitleSuffix: 'Studi Kasus · Satrio Faza Mubarok',
     notFoundTitle: 'Halaman tidak ditemukan',
   },
 
   a11y: {
     skip: 'Langsung ke konten utama',
+    slideNav: 'Navigasi bagian',
     mainNav: 'Navigasi utama',
     openMenu: 'Buka menu',
     closeMenu: 'Tutup menu',
@@ -44,7 +45,6 @@ const id = {
   intro: { label: 'memuat portofolio' },
 
   hero: {
-    status: 'Data Analyst Intern · PT Vinix Seven Aurum',
     greeting: 'Halo, saya',
     role: 'Data Analyst',
     tagline:
@@ -62,13 +62,12 @@ const id = {
     title: 'Data, rapi dan bermakna.',
     paragraphs: [
       'Saya Satrio Faza Mubarok, biasa dipanggil Noobmaster, mahasiswa Sistem Informasi di Universitas AMIKOM Yogyakarta (2023 – sekarang, target lulus 2027).',
-      'Saat ini saya menjalani magang sebagai Data Analyst di PT Vinix Seven Aurum, mengerjakan proyek dashboard bersama Divisi Data Analyst.',
       'Saya tertarik pada data science, penerapan machine learning, dan sistem trading otomatis.',
       'Tujuan saya adalah berkarier sebagai Data Analyst di perusahaan teknologi di Indonesia.',
     ],
     facts: [
       { label: 'Pendidikan', value: 'S1 Sistem Informasi, AMIKOM Yogyakarta' },
-      { label: 'Saat ini', value: 'Data Analyst Intern' },
+      { label: 'Target karier', value: 'Data Analyst · perusahaan teknologi' },
       { label: 'Minat', value: 'Data science · ML · Trading otomatis' },
     ],
     statProjects: 'Studi kasus',
@@ -155,13 +154,14 @@ const en: UI = {
     ogLocale: 'en_US',
     title: 'Satrio Faza Mubarok — Data Analyst',
     description:
-      'Portfolio of Satrio Faza Mubarok, an Information Systems student at AMIKOM Yogyakarta and Data Analyst Intern. Case studies in dashboards, data analysis, and applied machine learning.',
+      'Portfolio of Satrio Faza Mubarok, an Information Systems student at AMIKOM Yogyakarta pursuing a Data Analyst career. Case studies in dashboards, data analysis, and applied machine learning.',
     projectTitleSuffix: 'Case Study · Satrio Faza Mubarok',
     notFoundTitle: 'Page not found',
   },
 
   a11y: {
     skip: 'Skip to main content',
+    slideNav: 'Section navigation',
     mainNav: 'Main navigation',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
@@ -184,7 +184,6 @@ const en: UI = {
   intro: { label: 'loading portfolio' },
 
   hero: {
-    status: 'Data Analyst Intern · PT Vinix Seven Aurum',
     greeting: "Hi, I'm",
     role: 'Data Analyst',
     tagline: 'I turn raw data into clear dashboards and insights, so teams can make decisions with confidence.',
@@ -201,13 +200,12 @@ const en: UI = {
     title: 'Data, clean and meaningful.',
     paragraphs: [
       "I'm Satrio Faza Mubarok, also known as Noobmaster, an Information Systems student at Universitas AMIKOM Yogyakarta (2023 – present, expected to graduate in 2027).",
-      "I'm currently a Data Analyst Intern at PT Vinix Seven Aurum, working on dashboard projects with the Data Analyst Division.",
       "I'm interested in data science, applied machine learning, and automated trading systems.",
       'My goal is to build a career as a Data Analyst at a technology company in Indonesia.',
     ],
     facts: [
       { label: 'Education', value: 'B.Sc. Information Systems, AMIKOM Yogyakarta' },
-      { label: 'Currently', value: 'Data Analyst Intern' },
+      { label: 'Career goal', value: 'Data Analyst · tech company' },
       { label: 'Interests', value: 'Data science · ML · Automated trading' },
     ],
     statProjects: 'Case studies',
@@ -305,25 +303,6 @@ export interface ExperienceItem {
 }
 
 export const experience: ExperienceItem[] = [
-  {
-    kind: 'work',
-    title: { id: 'Data Analyst Intern', en: 'Data Analyst Intern' },
-    org: 'PT Vinix Seven Aurum',
-    period: { id: 'Agu 2026 – Des 2026', en: 'Aug 2026 – Dec 2026' },
-    current: true,
-    points: {
-      id: [
-        'Bergabung di Divisi Data Analyst.',
-        'Proyek akhir kelompok: dashboard Talent and Career Readiness di Looker Studio.',
-        'TODO: tambahkan 1–2 tanggung jawab utama selama magang.',
-      ],
-      en: [
-        'Part of the Data Analyst Division.',
-        'Group final project: a Talent and Career Readiness dashboard in Looker Studio.',
-        'TODO: add 1–2 key responsibilities during the internship.',
-      ],
-    },
-  },
   {
     kind: 'program',
     title: { id: 'Peserta Dicoding Coding Camp 2026', en: 'Dicoding Coding Camp 2026 Participant' },

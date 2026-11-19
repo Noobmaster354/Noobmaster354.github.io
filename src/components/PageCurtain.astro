@@ -1,0 +1,13 @@
+---
+/**
+ * Tirai transisi antar halaman (ClientRouter). Persist antar navigasi;
+ * dianimasikan oleh scripts/motion/page-curtain.ts.
+ */
+---
+
+<div class="page-curtain" aria-hidden="true" data-page-curtain transition:persist="page-curtain">
+  <div class="curtain-layer" data-layer="accent"></div>
+  <div class="curtain-layer" data-layer="surface"></div>
+  <div class="curtain-layer" data-layer="bg"></div>
+  <span class="curtain-edge"></span>
+</div>

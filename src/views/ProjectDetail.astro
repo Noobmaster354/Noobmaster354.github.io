@@ -51,10 +51,7 @@ const title = `${p.title[lang]} — ${ui.meta.projectTitleSuffix}`;
           {cs.back}
         </a>
         <p class="eyebrow mt-10" data-reveal>{p.type[lang]}</p>
-        <h1
-          class="mt-5 max-w-4xl text-balance text-[clamp(2.25rem,7vw,4.75rem)] font-semibold leading-[1] tracking-[-0.035em] text-fg"
-          transition:name={`title-${p.slug}`}
-        >
+        <h1 class="mt-5 max-w-4xl text-balance text-[clamp(2.25rem,7vw,4.75rem)] font-semibold leading-[1] tracking-[-0.035em] text-fg">
           {p.title[lang]}
         </h1>
         <p class="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg" data-reveal>{p.summary[lang]}</p>
@@ -77,7 +74,7 @@ const title = `${p.title[lang]} — ${ui.meta.projectTitleSuffix}`;
     </header>
 
     <div class="container-x">
-      <div class="card aspect-[16/9] overflow-hidden sm:aspect-[21/9]" transition:name={`cover-${p.slug}`} data-reveal>
+      <div class="card aspect-[16/9] overflow-hidden sm:aspect-[21/9]" data-reveal>
         <div class="h-full w-full" data-speed="0.06">
           <ProjectCover type={p.cover} class="scale-110" />
         </div>

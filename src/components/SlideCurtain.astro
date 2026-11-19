@@ -1,0 +1,14 @@
+---
+/**
+ * Tirai wipe untuk satu section (beranda). Ditutup penuh saat motion aktif,
+ * lalu dibuka oleh scripts/motion/slides.ts ketika section masuk layar.
+ * Urutan DOM = urutan tumpukan: accent (bawah) → surface → bg (atas).
+ */
+---
+
+<div class="slide-curtain" aria-hidden="true" data-curtain>
+  <div class="curtain-layer" data-layer="accent"></div>
+  <div class="curtain-layer" data-layer="surface"></div>
+  <div class="curtain-layer" data-layer="bg"></div>
+  <span class="curtain-edge"></span>
+</div>

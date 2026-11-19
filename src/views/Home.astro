@@ -6,6 +6,7 @@ import Projects from '../sections/Projects.astro';
 import Experience from '../sections/Experience.astro';
 import Skills from '../sections/Skills.astro';
 import Contact from '../sections/Contact.astro';
+import SlideNav from '../components/SlideNav.astro';
 import type { Lang } from '../data/content';
 
 interface Props {
@@ -21,4 +22,5 @@ const { lang } = Astro.props;
   <Experience lang={lang} />
   <Skills lang={lang} />
   <Contact lang={lang} />
+  <SlideNav lang={lang} />
 </Layout>

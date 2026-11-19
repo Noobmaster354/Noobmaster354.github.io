@@ -4,6 +4,7 @@ import GraduationCap from '@lucide/astro/icons/graduation-cap';
 import Layers from '@lucide/astro/icons/layers';
 import Sparkles from '@lucide/astro/icons/sparkles';
 import SectionHeading from '../components/SectionHeading.astro';
+import SlideCurtain from '../components/SlideCurtain.astro';
 import { t, filled, isTodo } from '../i18n/utils';
 import { experience, type Lang } from '../data/content';
 
@@ -16,7 +17,8 @@ const items = experience.filter((e) => !e.draft);
 const icons = { work: Briefcase, program: Layers, education: GraduationCap, activity: Sparkles };
 ---
 
-<section id="experience" class="relative py-24 sm:py-32" aria-labelledby="experience-title">
+<section id="experience" class="relative py-24 sm:py-32" aria-labelledby="experience-title" data-slide>
+  <SlideCurtain />
   <div class="container-x grid gap-12 lg:grid-cols-12">
     <div class="lg:col-span-4">
       <div class="lg:sticky lg:top-28">

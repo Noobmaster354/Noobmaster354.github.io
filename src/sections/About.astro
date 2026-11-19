@@ -1,5 +1,6 @@
 ---
 import SectionHeading from '../components/SectionHeading.astro';
+import SlideCurtain from '../components/SlideCurtain.astro';
 import { t } from '../i18n/utils';
 import { allSkills, type Lang } from '../data/content';
 import { projects } from '../data/projects';
@@ -18,7 +19,8 @@ const stats = [
 ];
 ---
 
-<section id="about" class="relative py-24 sm:py-32" aria-labelledby="about-title">
+<section id="about" class="relative py-24 sm:py-32" aria-labelledby="about-title" data-slide>
+  <SlideCurtain />
   <div class="container-x grid gap-12 lg:grid-cols-12 lg:gap-16">
     <div class="lg:col-span-7">
       <SectionHeading id="about-title" eyebrow={ui.eyebrow} title={ui.title} />

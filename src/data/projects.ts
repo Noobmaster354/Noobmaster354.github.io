@@ -43,16 +43,16 @@ export const projects: Project[] = [
       en: 'Data Analyst Division team member — TODO: specific role',
     },
     summary: {
-      id: 'Dashboard Looker Studio tentang kesiapan talenta dan karier, proyek akhir kelompok Divisi Data Analyst saat magang di PT Vinix Seven Aurum.',
-      en: 'A Looker Studio dashboard on talent and career readiness, the Data Analyst Division group final project during my internship at PT Vinix Seven Aurum.',
+      id: 'Dashboard Looker Studio tentang kesiapan talenta dan karier, proyek akhir kelompok Divisi Data Analyst.',
+      en: 'A Looker Studio dashboard on talent and career readiness, a group final project by the Data Analyst Division.',
     },
     background: {
       id: [
-        'Proyek akhir program magang di PT Vinix Seven Aurum yang dikerjakan secara berkelompok oleh Divisi Data Analyst, dengan tema kesiapan talenta dan karier.',
+        'Proyek akhir yang dikerjakan secara berkelompok oleh Divisi Data Analyst, dengan tema kesiapan talenta dan karier.',
         'TODO: jelaskan pertanyaan bisnis yang ingin dijawab dan siapa pengguna dashboard.',
       ],
       en: [
-        'The final project of the PT Vinix Seven Aurum internship program, built as a group by the Data Analyst Division around talent and career readiness.',
+        'A final project built as a group by the Data Analyst Division around talent and career readiness.',
         'TODO: describe the business question and who uses the dashboard.',
       ],
     },
