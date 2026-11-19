@@ -1,6 +1,8 @@
 ---
 import ArrowUp from '@lucide/astro/icons/arrow-up';
-import { t } from '../i18n/utils';
+import BrandIcon from './BrandIcon.astro';
+import { t, isTodo } from '../i18n/utils';
+import { site } from '../data/site';
 import type { Lang } from '../data/content';
 
 interface Props {
@@ -9,13 +11,25 @@ interface Props {
 const { lang } = Astro.props;
 const ui = t(lang);
 const year = new Date().getFullYear();
+const github = isTodo(site.contact.github) ? '' : site.contact.github;
 ---
 
-<footer class="relative z-[2] mt-24 border-t border-line">
-  <div class="container-x flex flex-col items-start justify-between gap-4 py-8 text-sm text-subtle sm:flex-row sm:items-center">
-    <p class="font-mono text-xs">© {year} {ui.footer.rights}. {ui.footer.built}</p>
-    <a href="#main" class="icon-btn" aria-label={ui.a11y.backToTop} data-scroll-top>
-      <ArrowUp size={16} aria-hidden="true" />
-    </a>
+<footer class="relative z-[2] mt-8 border-t border-line">
+  <div class="container-x flex items-center justify-between gap-6 py-8 text-subtle">
+    <p class="font-mono text-xs leading-relaxed">
+      © {year} {ui.footer.rights}.<span class="block sm:inline"> {ui.footer.built}</span>
+    </p>
+    <div class="flex shrink-0 items-center gap-2">
+      {
+        github && (
+          <a href={github} target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label={`${ui.contact.github} — ${ui.a11y.externalLink}`}>
+            <BrandIcon name="github" size={16} />
+          </a>
+        )
+      }
+      <a href="#main" class="icon-btn" aria-label={ui.a11y.backToTop} data-scroll-top>
+        <ArrowUp size={16} aria-hidden="true" />
+      </a>
+    </div>
   </div>
 </footer>

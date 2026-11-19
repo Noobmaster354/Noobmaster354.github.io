@@ -16,12 +16,12 @@ const other = otherLang(lang);
 const switchHref = alternatePath(Astro.url, other);
 
 const links = [
-  { href: localizePath('/#about', lang), label: ui.nav.about },
-  { href: localizePath('/#projects', lang), label: ui.nav.projects },
-  { href: localizePath('/#experience', lang), label: ui.nav.experience },
-  { href: localizePath('/#skills', lang), label: ui.nav.skills },
-  { href: localizePath('/#contact', lang), label: ui.nav.contact },
-];
+  { id: 'about', label: ui.nav.about },
+  { id: 'projects', label: ui.nav.projects },
+  { id: 'experience', label: ui.nav.experience },
+  { id: 'skills', label: ui.nav.skills },
+  { id: 'contact', label: ui.nav.contact },
+].map((l) => ({ ...l, href: localizePath(`/#${l.id}`, lang) }));
 ---
 
 <header class="site-header fixed inset-x-0 top-0 z-50" data-header>
@@ -42,7 +42,7 @@ const links = [
       {
         links.map((l) => (
           <li>
-            <a href={l.href} class="link-u transition-colors hover:text-fg">
+            <a href={l.href} class="link-u transition-colors hover:text-fg" data-nav-link={l.id}>
               {l.label}
             </a>
           </li>
@@ -108,6 +108,9 @@ const links = [
   :global(.menu-open) .header-bg {
     opacity: 1;
     border-color: var(--line);
+  }
+  [data-nav-link][aria-current] {
+    color: var(--fg);
   }
   :global([data-theme='dark']) .theme-icon-sun,
   :global([data-theme='light']) .theme-icon-moon {

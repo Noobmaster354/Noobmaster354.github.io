@@ -63,7 +63,6 @@ const id = {
     paragraphs: [
       'Saya Satrio Faza Mubarok, biasa dipanggil Noobmaster, mahasiswa Sistem Informasi di Universitas AMIKOM Yogyakarta (2023 – sekarang, target lulus 2027).',
       'Saya tertarik pada data science, penerapan machine learning, dan sistem trading otomatis.',
-      'Tujuan saya adalah berkarier sebagai Data Analyst di perusahaan teknologi di Indonesia.',
     ],
     facts: [
       { label: 'Pendidikan', value: 'S1 Sistem Informasi, AMIKOM Yogyakarta' },
@@ -71,7 +70,7 @@ const id = {
       { label: 'Minat', value: 'Data science · ML · Trading otomatis' },
     ],
     statProjects: 'Studi kasus',
-    statTools: 'Tools & teknologi',
+    statTools: 'Skill & tools',
     photoAlt: 'Foto Satrio Faza Mubarok',
   },
 
@@ -109,6 +108,7 @@ const id = {
     github: 'GitHub',
     cv: 'Unduh CV',
     unavailable: 'Segera tersedia',
+    emailPending: 'Alamat email publik segera tersedia. Untuk sementara, hubungi saya lewat GitHub.',
   },
 
   caseStudy: {
@@ -201,7 +201,6 @@ const en: UI = {
     paragraphs: [
       "I'm Satrio Faza Mubarok, also known as Noobmaster, an Information Systems student at Universitas AMIKOM Yogyakarta (2023 – present, expected to graduate in 2027).",
       "I'm interested in data science, applied machine learning, and automated trading systems.",
-      'My goal is to build a career as a Data Analyst at a technology company in Indonesia.',
     ],
     facts: [
       { label: 'Education', value: 'B.Sc. Information Systems, AMIKOM Yogyakarta' },
@@ -209,7 +208,7 @@ const en: UI = {
       { label: 'Interests', value: 'Data science · ML · Automated trading' },
     ],
     statProjects: 'Case studies',
-    statTools: 'Tools & technologies',
+    statTools: 'Skills & tools',
     photoAlt: 'Photo of Satrio Faza Mubarok',
   },
 
@@ -247,6 +246,7 @@ const en: UI = {
     github: 'GitHub',
     cv: 'Download CV',
     unavailable: 'Coming soon',
+    emailPending: 'A public email address is coming soon. For now, you can reach me on GitHub.',
   },
 
   caseStudy: {

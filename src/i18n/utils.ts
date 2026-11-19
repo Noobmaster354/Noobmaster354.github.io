@@ -5,12 +5,6 @@ export { isTodo };
 
 export const langs = Object.keys(languages) as Lang[];
 
-/** Bahasa dari URL: "/en/..." → en, selain itu → id */
-export function getLang(url: URL): Lang {
-  const [, first] = url.pathname.split('/');
-  return (langs as string[]).includes(first) && first !== defaultLang ? (first as Lang) : defaultLang;
-}
-
 export const t = (lang: Lang) => ui[lang];
 
 /** Hapus prefix bahasa: "/en/projects/x/" → "/projects/x/" */

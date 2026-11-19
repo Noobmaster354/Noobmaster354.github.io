@@ -7,7 +7,6 @@ import Footer from '../components/Footer.astro';
 import Intro from '../components/Intro.astro';
 import Toast from '../components/Toast.astro';
 import PlexusBackground from '../components/PlexusBackground.astro';
-import PageCurtain from '../components/PageCurtain.astro';
 import { t } from '../i18n/utils';
 import type { Lang } from '../data/content';
 
@@ -93,7 +92,6 @@ const ui = t(lang);
     <div class="plexus-layer" aria-hidden="true" transition:persist="plexus">
       <PlexusBackground position="absolute" side="right" density={1} darkColor="34,211,238" lightColor="8,145,178" class="plexus-global" />
     </div>
-    <PageCurtain />
     <Intro lang={lang} />
 
     <Navbar lang={lang} />

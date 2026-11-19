@@ -1,8 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
-import { whenOpen } from './slides';
-import { isLite } from './curtain';
+import { isLite } from './sections';
 
 const EASE = 'expo.out';
 const ENTER = 'power4.out';
@@ -39,7 +38,7 @@ export function hero(delay: number) {
 
 const rise = () => (isLite() ? 32 : 60);
 
-/** Elemen tunggal muncul saat scroll (setelah tirai section terbuka): fade + naik dari bawah */
+/** Elemen tunggal muncul saat scroll: fade + naik dari bawah */
 export function reveals() {
   gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
     gsap.set(el, { y: rise() });
@@ -47,8 +46,7 @@ export function reveals() {
       trigger: el,
       start: 'top 90%',
       once: true,
-      onEnter: () =>
-        whenOpen(el, (delay) => gsap.to(el, { opacity: 1, y: 0, duration: 1.05, ease: ENTER, delay, overwrite: 'auto' })),
+      onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 1.05, ease: ENTER, overwrite: 'auto' }),
     });
   });
 }
@@ -62,24 +60,19 @@ export function groups() {
     ScrollTrigger.batch(items, {
       start: 'top 90%',
       once: true,
-      onEnter: (batch) =>
-        whenOpen(group, (delay) => {
-          gsap.to(batch, { opacity: 1, y: 0, duration: 1, ease: ENTER, stagger: 0.08, delay: delay + 0.1, overwrite: true });
-          batch.forEach((item) => {
-            const chips = (item as HTMLElement).querySelectorAll('[data-chips] > li');
-            if (chips.length)
-              gsap.fromTo(
-                chips,
-                { opacity: 0, y: 10 },
-                { opacity: 1, y: 0, duration: 0.6, ease: EASE, stagger: 0.04, delay: delay + 0.35 },
-              );
-          });
-        }),
+      onEnter: (batch) => {
+        gsap.to(batch, { opacity: 1, y: 0, duration: 1, ease: ENTER, stagger: 0.08, overwrite: true });
+        batch.forEach((item) => {
+          const chips = (item as HTMLElement).querySelectorAll('[data-chips] > li');
+          if (chips.length)
+            gsap.fromTo(chips, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: EASE, stagger: 0.04, delay: 0.25 });
+        });
+      },
     });
   });
 }
 
-/** Judul bagian: reveal per kata di dalam mask per baris (GSAP SplitText), setelah tirai terbuka */
+/** Judul bagian: reveal per kata di dalam mask per baris (GSAP SplitText) */
 export function splitHeadings(isAlive: () => boolean) {
   return () => {
     if (!isAlive()) return;
@@ -109,7 +102,7 @@ export function splitHeadings(isAlive: () => boolean) {
               trigger: el,
               start: 'top 90%',
               once: true,
-              onEnter: () => whenOpen(el, (delay) => gsap.delayedCall(delay, () => tween.play())),
+              onEnter: () => tween.play(),
             });
             return tween;
           },
@@ -133,20 +126,18 @@ export function counters() {
       start: 'top 92%',
       once: true,
       onEnter: () =>
-        whenOpen(el, (delay) =>
-          gsap.to(obj, {
-            v: end,
-            duration: 1.6,
-            delay: delay + 0.2,
-            ease: 'power2.out',
-            onUpdate: () => {
-              el.textContent = String(Math.round(obj.v));
-            },
-            onComplete: () => {
-              el.textContent = String(end);
-            },
-          }),
-        ),
+        gsap.to(obj, {
+          v: end,
+          duration: 1.6,
+          delay: 0.2,
+          ease: 'power2.out',
+          onUpdate: () => {
+            el.textContent = String(Math.round(obj.v));
+          },
+          onComplete: () => {
+            el.textContent = String(end);
+          },
+        }),
     });
   });
 }

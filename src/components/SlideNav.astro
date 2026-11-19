@@ -19,8 +19,8 @@ const items = [
 ];
 ---
 
-<!-- Indikator slide: hanya ≥768px. Link anchor biasa → scroll halus ditangani motion/lenis.ts -->
-<nav class="slide-nav hidden md:block" aria-label={ui.a11y.slideNav} data-slide-nav>
+<!-- Indikator slide: hanya ≥1024px (tidak menimpa konten di tablet). Link anchor biasa → scroll halus ditangani motion/lenis.ts -->
+<nav class="slide-nav hidden lg:block" aria-label={ui.a11y.slideNav} data-slide-nav>
   <ul class="flex flex-col items-center">
     {
       items.map((it, i) => (

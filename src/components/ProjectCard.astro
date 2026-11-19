@@ -27,7 +27,7 @@ const href = localizePath(`/projects/${p.slug}/`, lang);
     <div class="flex flex-1 flex-col p-6 sm:p-7">
       <p class="font-mono text-xs uppercase tracking-wider text-accent">{p.type[lang]}</p>
       <h3 class="mt-3 text-xl font-semibold tracking-tight text-fg sm:text-2xl">
-        <a href={href} class="after:absolute after:inset-0 after:content-['']">
+        <a href={href} class="card-link after:absolute after:inset-0 after:content-['']">
           {p.title[lang]}
         </a>
       </h3>

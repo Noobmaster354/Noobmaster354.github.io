@@ -4,7 +4,6 @@ import GraduationCap from '@lucide/astro/icons/graduation-cap';
 import Layers from '@lucide/astro/icons/layers';
 import Sparkles from '@lucide/astro/icons/sparkles';
 import SectionHeading from '../components/SectionHeading.astro';
-import SlideCurtain from '../components/SlideCurtain.astro';
 import { t, filled, isTodo } from '../i18n/utils';
 import { experience, type Lang } from '../data/content';
 
@@ -17,16 +16,16 @@ const items = experience.filter((e) => !e.draft);
 const icons = { work: Briefcase, program: Layers, education: GraduationCap, activity: Sparkles };
 ---
 
-<section id="experience" class="relative py-24 sm:py-32" aria-labelledby="experience-title" data-slide>
-  <SlideCurtain />
-  <div class="container-x grid gap-12 lg:grid-cols-12">
+<section id="experience" class="relative py-16 sm:py-24 lg:py-28" aria-labelledby="experience-title" data-slide>
+  <div class="container-x grid lg:grid-cols-12 lg:gap-12">
     <div class="lg:col-span-4">
       <div class="lg:sticky lg:top-28">
         <SectionHeading id="experience-title" eyebrow={ui.experience.eyebrow} title={ui.experience.title} />
       </div>
     </div>
 
-    <ol class="timeline relative lg:col-span-8" data-reveal-group>
+    <div class="scrim lg:col-span-8">
+    <ol class="timeline relative" data-reveal-group>
       {
         items.map((e) => {
           const Icon = icons[e.kind];
@@ -37,7 +36,7 @@ const icons = { work: Briefcase, program: Layers, education: GraduationCap, acti
                 <Icon size={16} aria-hidden="true" />
               </span>
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-subtle">
-                <span>{isTodo(e.period[lang]) ? ui.caseStudy.pending : e.period[lang]}</span>
+                {isTodo(e.period[lang]) ? <span class="todo-note">{ui.caseStudy.pending}</span> : <span>{e.period[lang]}</span>}
                 {e.current && <span class="chip chip-accent py-0.5">{ui.experience.present}</span>}
               </div>
               <h3 class="mt-2 text-lg font-semibold tracking-tight text-fg sm:text-xl">{e.title[lang]}</h3>
@@ -54,6 +53,7 @@ const icons = { work: Briefcase, program: Layers, education: GraduationCap, acti
         })
       }
     </ol>
+    </div>
   </div>
 </section>
 

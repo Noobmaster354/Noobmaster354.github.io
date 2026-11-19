@@ -1,6 +1,5 @@
 ---
 import SectionHeading from '../components/SectionHeading.astro';
-import SlideCurtain from '../components/SlideCurtain.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { t } from '../i18n/utils';
 import { projects } from '../data/projects';
@@ -13,14 +12,13 @@ const { lang } = Astro.props;
 const ui = t(lang).projects;
 ---
 
-<section id="projects" class="relative py-24 sm:py-32" aria-labelledby="projects-title" data-slide>
-  <SlideCurtain />
+<section id="projects" class="relative py-16 sm:py-24 lg:py-28" aria-labelledby="projects-title" data-slide>
   <div class="container-x">
     <SectionHeading id="projects-title" eyebrow={ui.eyebrow} title={ui.title} intro={ui.intro} />
-    <ul class="grid gap-5 sm:gap-6 md:grid-cols-2 md:pb-12" data-reveal-group>
+    <ul class="grid gap-5 sm:gap-6 md:grid-cols-2" data-reveal-group>
       {
         projects.map((p, i) => (
-          <li class:list={[i % 2 === 1 && 'md:translate-y-12']}>
+          <li>
             <ProjectCard project={p} lang={lang} index={i} />
           </li>
         ))

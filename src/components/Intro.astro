@@ -10,7 +10,7 @@ const { lang } = Astro.props;
 const ui = t(lang);
 ---
 
-<!-- Intro singkat (sekali per sesi). Dianimasikan oleh scripts/motion/intro.ts -->
+<!-- Intro singkat (sekali per sesi). Dianimasikan oleh intro() di scripts/motion/reveal.ts -->
 <div class="intro" aria-hidden="true" data-intro>
   <div class="flex flex-col items-center gap-4">
     <span class="intro-mark grid size-14 place-items-center rounded-xl border border-line-strong font-mono text-base font-semibold text-accent">

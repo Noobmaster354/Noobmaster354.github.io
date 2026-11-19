@@ -1,6 +1,5 @@
 ---
 import SectionHeading from '../components/SectionHeading.astro';
-import SlideCurtain from '../components/SlideCurtain.astro';
 import BrandIcon from '../components/BrandIcon.astro';
 import { t } from '../i18n/utils';
 import { skillGroups, allSkills, type Lang } from '../data/content';
@@ -12,8 +11,7 @@ const { lang } = Astro.props;
 const ui = t(lang).skills;
 ---
 
-<section id="skills" class="relative py-24 sm:py-32" aria-labelledby="skills-title" data-slide>
-  <SlideCurtain />
+<section id="skills" class="relative py-16 sm:py-24 lg:py-28" aria-labelledby="skills-title" data-slide>
   <div class="container-x">
     <SectionHeading id="skills-title" eyebrow={ui.eyebrow} title={ui.title} intro={ui.intro} />
 
@@ -41,12 +39,12 @@ const ui = t(lang).skills;
   </div>
 
   <!-- Marquee dekoratif (konten sama sudah ada di daftar di atas) -->
-  <div class="marquee mt-16 sm:mt-20" aria-hidden="true" data-speed="0.04">
+  <div class="marquee mt-12 sm:mt-16" aria-hidden="true" data-speed="0.04">
     {
       [0, 1].map(() => (
         <ul class="marquee-track">
           {allSkills.map((s) => (
-            <li class="flex items-center gap-2 whitespace-nowrap rounded-full border border-line px-4 py-2 font-mono text-sm text-muted">
+            <li class="flex items-center gap-2 whitespace-nowrap rounded-full border border-line px-3 py-1.5 font-mono text-xs text-muted sm:px-4 sm:py-2 sm:text-sm">
               {s.icon && <BrandIcon name={s.icon} size={15} />}
               {s.label}
             </li>

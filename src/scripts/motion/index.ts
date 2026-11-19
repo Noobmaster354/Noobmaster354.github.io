@@ -3,8 +3,8 @@
  * - Init di `astro:page-load` (juga saat load pertama), bersihkan di `astro:before-swap`.
  * - Semua tween di dalam gsap.context() → ctx.revert() mengembalikan DOM bersih.
  * - prefers-reduced-motion: tanpa Lenis/animasi, konten langsung tampil.
- * - Hanya transform, opacity, clip-path (tirai), dan filter ringan yang dianimasikan.
- * - Transisi slide (tirai cyan) di ./slides, transisi antar halaman di ./page-curtain.
+ * - Hanya transform & opacity yang dianimasikan.
+ * - Section aktif (indikator + navbar) & plexus global di ./sections.
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,8 +14,7 @@ import { scrollProgress } from './progress';
 import { typing } from './typing';
 import { magnetic, spotlight, cursorGlow } from './interactions';
 import { intro, hero, reveals, groups, splitHeadings, counters, parallax } from './reveal';
-import { slides, plexusLayer } from './slides';
-import './page-curtain';
+import { sectionNav, plexusLayer } from './sections';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -44,8 +43,7 @@ function init() {
   ctx = gsap.context(() => {
     const delay = intro();
     hero(delay);
-    // slides() lebih dulu: mendaftarkan tirai tiap section sebelum trigger konten dibuat
-    slides();
+    sectionNav();
     plexusLayer();
     reveals();
     groups();
